@@ -1,0 +1,7 @@
+* Moved to the released nice-sbt-settings-0.2.0;
+* Set (aws-)statika version to 1.0-RC1; 
+* Set scalatest version to 2.0; 
+* Restructured settings, defined two types of projects as in nice-sbt-settings:   
+  + `Statika.bundleProject`;
+  + `Statika.distributionProject`; 
+* Fixed version of aws-statika and added it only in distributionProject;

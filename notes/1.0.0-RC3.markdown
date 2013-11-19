@@ -1,0 +1,2 @@
+* Upgraded to (aws-)statika-1.0.0-RC3
+* Upgraded to nice-sbt-settings-0.3.1

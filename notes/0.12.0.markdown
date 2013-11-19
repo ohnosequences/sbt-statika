@@ -1,0 +1,1 @@
+* Made metadata universal (sbt+fat) and the fat-url used in it is universal too (mvn+ivy)

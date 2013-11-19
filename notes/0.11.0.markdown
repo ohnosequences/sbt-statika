@@ -1,0 +1,12 @@
+* Changed generated metadata from object to class for flexibility;
+* Restructured settings; 
+* Separatred distribution settings; 
+* Added sbt-assebly plugin and it's settings for fat distributions;
+* Disabled publishing sources and docs artifacts;
+* Removed statika version from the metadata
+* Fixed transformation of S3Resolver to a public sbt resolver
+* Changed scope of the keys to global; 
+* Added aws-statika optional dependency (through the `awsStatikaVersion` key); 
+* Added publishing resolver to the metadata;
+* Fixed versions to sbt-0.13 scala-2.10.3;
+* Moved to era7-sbt-release plugin;
