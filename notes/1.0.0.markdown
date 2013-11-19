@@ -1,1 +1,1 @@
-No changes
+First stable release
