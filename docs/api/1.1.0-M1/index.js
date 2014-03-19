@@ -1,0 +1,1 @@
+Index.PACKAGES = {"ohnosequences" : [], "ohnosequences.sbt" : [{"object" : "ohnosequences\/sbt\/SbtStatikaPlugin$.html", "name" : "ohnosequences.sbt.SbtStatikaPlugin"}], "ohnosequences.sbt.statika" : [{"object" : "ohnosequences\/sbt\/statika\/Utils$.html", "name" : "ohnosequences.sbt.statika.Utils"}], "sbt" : []};
