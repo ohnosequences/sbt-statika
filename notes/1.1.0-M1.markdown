@@ -1,0 +1,4 @@
+* Upgraded nice-sbt-settings to 0.4.0-RC2;
+* Upgraded sbt-s3-resolver to 0.10.1;
+* Updated version of aws-statika to 1.0.1 (important bugfix);
+* Changed the way S3 resolvers are used;

@@ -7,9 +7,12 @@ Default sbt project settings for statika bundles. This plugin is published for s
 Add the following dependency to `project/plugins.sbt` file in your sbt project
 
 ```scala
-resolvers += "Era7 maven releases" at "http://releases.era7.com.s3.amazonaws.com"
+resolvers ++= Seq(
+  "Era7 maven releases" at "http://releases.era7.com.s3.amazonaws.com",
+  "sbt-taglist-releases" at "http://johanandren.github.com/releases/"
+)
 
-addSbtPlugin("ohnosequences" % "sbt-statika" % "1.0.0")
+addSbtPlugin("ohnosequences" % "sbt-statika" % "1.1.0")
 ```
 
 ### Settings
@@ -47,6 +50,5 @@ This plugin adds to your project following dependencies:
 
 * [nice-sbt-settings](https://github.com/ohnosequences/nice-sbt-settings) plugin for standardized release process
 * [sbt-start-script](https://github.com/sbt/sbt-start-script) plugin for convenient running
-* [scalatest](https://github.com/scalatest/scalatest) library (only for `test` configuration)
 * [statika](https://github.com/ohnosequences/statika) library
 * [aws-statika](https://github.com/ohnosequences/aws-statika) library (for distributions)
