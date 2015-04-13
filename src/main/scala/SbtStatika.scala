@@ -4,7 +4,8 @@ import sbt._, Keys._
 
 import ohnosequences.sbt._
 import SbtS3Resolver._, autoImport._
-import nice._, NiceProjectConfigs._, ResolverSettings._, AssemblySettings._
+import nice._, NiceProjectConfigs._, ResolverSettings._, AssemblySettings._, ReleaseSettings._
+import sbtrelease.ReleasePlugin.ReleaseKeys.releaseProcess
 
 object SbtStatikaPlugin extends AutoPlugin {
 
