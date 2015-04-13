@@ -115,7 +115,20 @@ object SbtStatikaPlugin extends AutoPlugin {
       Seq(file)
     },
 
-    sourceGenerators in Compile += generateMetadata.taskValue
+    sourceGenerators in Compile += generateMetadata.taskValue,
+
+    releaseProcess := constructReleaseProcess(
+      initChecks, Seq(
+      askVersionsAndCheckNotes,
+      //packAndTest,
+      genMdDocs,
+      genApiDocs,
+      publishArtifacts,
+      commitAndTag,
+      githubRelease,
+      nextVersion,
+      githubPush
+    ))
 
   )
 
