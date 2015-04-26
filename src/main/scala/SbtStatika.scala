@@ -29,10 +29,8 @@ object SbtStatikaPlugin extends AutoPlugin {
     lazy val instanceType = settingKey[InstanceType]("Instance type to use for application")
     lazy val keyPair = settingKey[String]("Keypair name for accessing the launched instance")
     lazy val instanceRole = settingKey[Option[String]]("Instance profile role name")
-    //lazy val applyEnvironment = settingKey[AnyEnvironment]("Environment to use for applying a bundle")*/
-    //lazy val applyBundle = settingKey[AnyBundle]("Bundle that you want to apply")*/
     lazy val applyCompat = settingKey[AnyAMICompatible]("Instance profile role name")
-    lazy val apply = taskKey[Unit]("Launches instances to apply the bundle and returns references to them")
+    //lazy val launchedInstances = settingKey[List[]]("Instance profile role name")*/
   }
   import autoImport._
 
@@ -40,9 +38,52 @@ object SbtStatikaPlugin extends AutoPlugin {
   override def requires = empty
   override def trigger = allRequirements
 
+  val applyCmd: Command = Command.command("applyBundle"){ state: State =>
+    import state._
+    val extracted = Project.extract(state)
+    import extracted._
+
+    val creds = launchCredentials in currentRef get structure.data getOrElse
+      sys.error("launchCredentials is not defined")
+
+    val comp = applyCompat in currentRef get structure.data getOrElse
+      sys.error("applyCompat is not defined")
+
+    val ami = comp.environment
+    val bundle = comp.bundle
+    val metadata = comp.metadata
+
+    val instType = instanceType in currentRef get structure.data getOrElse
+      sys.error("instanceType is not defined")
+
+    val key = keyPair in currentRef get structure.data getOrElse
+      sys.error("keyPair is not defined")
+
+    val role = instanceRole in currentRef get structure.data getOrElse
+      sys.error("instanceRole is not defined")
+
+    val specs = InstanceSpecs(
+      instanceType = instType,
+      amiId = ami.id,
+      keyName = key,
+      userData = ami.userScript(bundle)(_ => new AMICompatible(ami, bundle, metadata)),
+      instanceProfile = role
+    )
+    println(specs)
+
+    val ec2 = EC2.create(creds)
+    ec2.runInstances(1, specs)
+    state
+  }
+
+  // lazy val applySettings: Seq[Setting[_]] = Seq(
+
+  //   sourceGenerators in Compile += generateApplicator.taskValue
+  // )
+
   // Default settings
   override lazy val projectSettings: Seq[Setting[_]] =
-    Nice.scalaProject ++ AssemblySettings.fatArtifactSettings ++ Seq(
+    Nice.scalaProject ++ Seq(
 
     // resolvers needed for statika dependency
     resolvers ++= Seq (
@@ -70,14 +111,17 @@ object SbtStatikaPlugin extends AutoPlugin {
       privateResolvers.value.map{ toSbtResolver(_) },
 
     // publishing (ivy-style by default)
-    publishMavenStyle := false,
+    publishMavenStyle := !isPrivate.value,
     // disable publishing sources and docs
     publishArtifact in (Compile, packageSrc) := false,
     publishArtifact in (Compile, packageDoc) := false,
 
-    statikaVersion := "2.0.0-SNAPSHOT",
+    statikaVersion := "2.0.0-feature-no-typesets-SNAPSHOT",
 
     libraryDependencies += "ohnosequences" %% "statika" % statikaVersion.value,
+
+    scalaVersion := "2.10.5",
+    crossScalaVersions := Seq("2.11.6", scalaVersion.value),
 
     releaseProcess := constructReleaseProcess(
       initChecks, Seq(
@@ -90,11 +134,13 @@ object SbtStatikaPlugin extends AutoPlugin {
       githubRelease,
       nextVersion,
       githubPush
-    ))
+    )),
+
+    commands += applyCmd
   )
 
-  lazy val fatJarSettings: Seq[Setting[_]] = Seq(
-    awsStatikaVersion := "2.0.0-SNAPSHOT",
+  lazy val fatJarSettings: Seq[Setting[_]] = AssemblySettings.fatArtifactSettings ++ Seq(
+    awsStatikaVersion := "2.0.0-feature-no-typesets-SNAPSHOT",
 
     libraryDependencies += "ohnosequences" %% "aws-statika" % awsStatikaVersion.value,
 
@@ -148,29 +194,6 @@ object SbtStatikaPlugin extends AutoPlugin {
     },
 
     sourceGenerators in Compile += generateMetadata.taskValue
-  )
-
-  lazy val applySettings: Seq[Setting[_]] = Seq(
-    launchCredentials := new ProfileCredentialsProvider("default"),
-
-    apply := {
-
-      val ec2 = EC2.create(launchCredentials.value)
-
-      val ami = applyCompat.value.environment
-      val bundle = applyCompat.value.bundle
-      val metadata = applyCompat.value.metadata
-
-      val specs = InstanceSpecs(
-        instanceType = instanceType.value,
-        amiId = ami.id,
-        keyName = keyPair.value,
-        userData = ami.userScript(bundle)(_ => new AMICompatible(ami, bundle, metadata)),
-        instanceProfile = instanceRole.value
-      )
-
-      ec2.runInstances(1, specs)
-    }
   )
 
 }
