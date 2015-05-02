@@ -12,14 +12,14 @@ resolvers += "Github-API" at "http://repo.jenkins-ci.org/public/"
 
 
 libraryDependencies ++= Seq(
-  "ohnosequences" %% "aws-scala-tools" % "0.12.0",
-  "ohnosequences" %% "statika" % "2.0.0-SNAPSHOT",
-  "ohnosequences" %% "aws-statika" % "2.0.0-SNAPSHOT"
+  "ohnosequences" %% "aws-scala-tools"  % "0.12.0",
+  "ohnosequences" %% "statika"          % "2.0.0-M1",
+  "ohnosequences" %% "aws-statika"      % "2.0.0-M1"
 )
 
 // plugins which will be inherrited by anybody who uses this plugin:
-addSbtPlugin("ohnosequences" % "sbt-s3-resolver" % "0.13.0-SNAPSHOT")
-addSbtPlugin("ohnosequences" % "nice-sbt-settings" % "0.6.0-SNAPSHOT")
+addSbtPlugin("ohnosequences" % "sbt-s3-resolver"    % "0.13.0-SNAPSHOT")
+addSbtPlugin("ohnosequences" % "nice-sbt-settings"  % "0.6.0-SNAPSHOT")
 
 dependencyOverrides ++= Set(
   "commons-codec" % "commons-codec" % "1.7",
