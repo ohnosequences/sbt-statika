@@ -8,7 +8,7 @@ import nice._, NiceProjectConfigs._, ResolverSettings._, AssemblySettings._, Rel
 import sbtrelease.ReleasePlugin.ReleaseKeys.releaseProcess
 
 import ohnosequences.statika.bundles._
-import ohnosequences.statika.aws._
+import ohnosequences.statika.aws.amis._
 
 import ohnosequences.awstools.ec2._
 import com.amazonaws.auth.profile._
@@ -29,7 +29,8 @@ object SbtStatikaPlugin extends AutoPlugin {
     lazy val instanceType = settingKey[InstanceType]("Instance type to use for application")
     lazy val keyPair = settingKey[String]("Keypair name for accessing the launched instance")
     lazy val instanceRole = settingKey[Option[String]]("Instance profile role name")
-    lazy val applyCompat = settingKey[AnyAMICompatible]("Instance profile role name")
+    // TODO should be compatible with env subtype of AMI
+    lazy val applyCompat = settingKey[Compatible[_ <: AnyAMI, _ <: AnyBundle]]("compatible witness for bundle and AMI")
     //lazy val launchedInstances = settingKey[List[]]("Instance profile role name")*/
   }
   import autoImport._
@@ -116,7 +117,7 @@ object SbtStatikaPlugin extends AutoPlugin {
     publishArtifact in (Compile, packageSrc) := false,
     publishArtifact in (Compile, packageDoc) := false,
 
-    statikaVersion := "2.0.0-feature-no-typesets-SNAPSHOT",
+    statikaVersion := "2.0.0-M1",
 
     libraryDependencies += "ohnosequences" %% "statika" % statikaVersion.value,
 
