@@ -8,7 +8,7 @@ import nice._, NiceProjectConfigs._, ResolverSettings._, AssemblySettings._, Rel
 import sbtrelease.ReleasePlugin.ReleaseKeys.releaseProcess
 
 import ohnosequences.statika.bundles._
-import ohnosequences.statika.aws.amis._
+import ohnosequences.statika.aws.amazonLinuxAMIs._
 
 import ohnosequences.awstools.ec2._
 import com.amazonaws.auth.profile._
@@ -30,7 +30,7 @@ object SbtStatikaPlugin extends AutoPlugin {
     lazy val keyPair = settingKey[String]("Keypair name for accessing the launched instance")
     lazy val instanceRole = settingKey[Option[String]]("Instance profile role name")
     // TODO should be compatible with env subtype of AMI
-    lazy val applyCompat = settingKey[Compatible[_ <: AnyAMI, _ <: AnyBundle]]("compatible witness for bundle and AMI")
+    lazy val applyCompat = settingKey[Compatible[_ <: AmazonLinuxAMI, _ <: AnyBundle]]("compatible witness for bundle and AMI")
     //lazy val launchedInstances = settingKey[List[]]("Instance profile role name")*/
   }
   import autoImport._
@@ -63,13 +63,14 @@ object SbtStatikaPlugin extends AutoPlugin {
     val role = instanceRole in currentRef get structure.data getOrElse
       sys.error("instanceRole is not defined")
 
-    val specs = InstanceSpecs(
+    implicit val bca = new Compatible(ami, bundle, metadata)
+
+    val specs = ami.instanceSpecsFor(bundle)(
       instanceType = instType,
-      amiId = ami.id,
-      keyName = key,
-      userData = ami.userScript(bundle)(_ => new AMICompatible(ami, bundle, metadata)),
-      instanceProfile = role
+      keyPair = key,
+      role = role
     )
+
     println(specs)
 
     val ec2 = EC2.create(creds)

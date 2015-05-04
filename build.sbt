@@ -14,7 +14,7 @@ resolvers += "Github-API" at "http://repo.jenkins-ci.org/public/"
 libraryDependencies ++= Seq(
   "ohnosequences" %% "aws-scala-tools"  % "0.12.0",
   "ohnosequences" %% "statika"          % "2.0.0-M1",
-  "ohnosequences" %% "aws-statika"      % "2.0.0-M1"
+  "ohnosequences" %% "aws-statika"      % "2.0.0-SNAPSHOT"
 )
 
 // plugins which will be inherrited by anybody who uses this plugin:
